@@ -4,6 +4,10 @@
 #include "quickfix/Exceptions.h"
 #include "quickfix/Dictionary.h"
 #include "quickfix/SessionSettings.h"
+#include "quickfix/Log.h"
+#include "quickfix/FileLog.h"
+#include "quickfix/MessageStore.h"
+#include "quickfix/FileStore.h"
 #include <stddef.h>
 #include <stdbool.h>
 #include <stdexcept>
@@ -20,6 +24,10 @@ extern "C" {
 #include "Dictionary_c.h"
 #include "SessionID_c.h"
 #include "SessionSettings_c.h"
+#include "Log_c.h"
+#include "FileLog_c.h"
+#include "MessageStore_c.h"
+#include "FileStore_c.h"
 
 #ifdef __cplusplus
 }
