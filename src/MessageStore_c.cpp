@@ -1,12 +1,11 @@
 #include "quickfixc.h"
 
 fix_memory_store_factory_t *fix_memorystore_factory_create() {
-    return new fix_memory_store_factory_t{new FIX::MemoryStoreFactory()};
+    return new fix_memory_store_factory_t{MemoryStoreFactory()};
 }
 
 void fix_memorystore_factory_destroy(fix_memory_store_factory_t *factory) {
     if (factory) {
-        delete factory->factory;
         delete factory;
     }
 }

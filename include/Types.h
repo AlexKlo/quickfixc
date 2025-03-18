@@ -1,6 +1,8 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+//TODO: В структурах должны храниться указатели
+
 typedef struct fix_error_t {
     char* message;
 } fix_error_t;
@@ -25,25 +27,43 @@ typedef struct fix_session_settings_t {
 } fix_session_settings_t;
 
 typedef struct fix_screen_log_factory_t {
-    FIX::ScreenLogFactory factory;
+    ScreenLogFactory factory;
 } fix_screen_log_factory_t;
 
-// typedef struct fix_log_t fix_log_t;
-
 typedef struct fix_file_log_factory_t {
-    FIX::FileLogFactory factory;
+    FileLogFactory factory;
 } fix_file_log_factory_t;
 
 typedef struct fix_file_store_factory_t {
-    FIX::FileStoreFactory *factory;
+    FileStoreFactory factory;
 } fix_file_store_factory_t;
 
-// typedef struct fix_message_store_t {
-//     FIX::MessageStore *store;
-// } fix_message_store_t;
-
 typedef struct fix_memory_store_factory_t {
-    FIX::MemoryStoreFactory *factory;
+    MemoryStoreFactory factory;
 } fix_memory_store_factory_t;
+
+typedef struct fix_application_t {
+    void *internal;
+} fix_application_t;
+
+typedef struct fix_field_base_t {
+    FieldBase *field_base;
+} fix_field_base_t;
+
+typedef struct fix_message_t {
+    Message message;
+} fix_message_t;
+
+typedef struct fix_header_t {
+    Header header;
+} fix_header_t;
+
+typedef struct fix_socket_initiator_t {
+    SocketInitiator *initiator;
+} fix_socket_initiator_t;
+
+typedef struct fix_ssl_socket_initiator_t {
+    SSLSocketInitiator *initiator;
+} fix_ssl_socket_initiator_t;
 
 #endif // TYPES_H
