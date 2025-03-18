@@ -11,17 +11,26 @@ find_path(QuickFIX_INCLUDE_DIRS QuickFIX REQUIRED)
 message(STATUS "Found QuickFIX library: ${QuickFIX_LIBRARIES}")
 message(STATUS "Found QuickFIX include dir: ${QuickFIX_INCLUDE_DIRS}")
 
+find_package(OpenSSL REQUIRED)
+
+if(OPENSSL_FOUND)
+    message(STATUS "Found OpenSSL: ${OPENSSL_LIBRARIES}")
+    message(STATUS "OpenSSL Include Dir: ${OPENSSL_INCLUDE_DIR}")
+else()
+    message(FATAL_ERROR "OpenSSL not found")
+endif()
+
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${QuickFIX_INCLUDE_DIRS})
-
-add_library(quickfixc SHARED ${SOURCES})
+include_directories(${OPENSSL_INCLUDE_DIR})
 
 file(GLOB_RECURSE SOURCES src/*.cpp)
 
+add_library(quickfixc SHARED ${SOURCES})
+
 target_sources(quickfixc PRIVATE ${SOURCES})
 
-target_link_libraries(quickfixc PRIVATE ${QuickFIX_LIBRARIES})
+target_link_libraries(quickfixc PRIVATE ${QuickFIX_LIBRARIES} ${OPENSSL_LIBRARIES})
 
 install(TARGETS quickfixc LIBRARY DESTINATION lib)
-
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include/quickfixc)
