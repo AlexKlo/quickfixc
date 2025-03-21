@@ -7,18 +7,23 @@ fix_session_id_t* fix_session_id_create(
     const char* senderCompID,
     const char* targetCompID,
     const char* sessionQualifier) {
-    return new fix_session_id_t(
-        beginString, 
-        senderCompID, 
-        targetCompID, 
+    
+    fix_session_id_t *session_id = new fix_session_id_t;
+    session_id->ptr = new SessionID(
+        beginString,
+        senderCompID,
+        targetCompID,
         sessionQualifier ? sessionQualifier : ""
     );
+
+    return session_id;
 }
 
 void fix_session_id_destroy(fix_session_id_t* session) {
+    delete session->ptr;
     delete session;
 }
 
 const char* fix_session_id_toString(const fix_session_id_t* session) {
-    return strdup(session->id.toString().c_str());
+    return strdup(session->ptr->toString().c_str());
 }

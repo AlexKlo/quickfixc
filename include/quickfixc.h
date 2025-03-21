@@ -17,6 +17,7 @@
 #include <stdbool.h>
 #include <stdexcept>
 #include <cstring> 
+#include <thread>
 
 using namespace FIX;
 

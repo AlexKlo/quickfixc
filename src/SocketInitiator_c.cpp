@@ -9,29 +9,29 @@ fix_socket_initiator_t *fix_socket_initiator_create(fix_application_t *app, void
 
         if (store) {
             if (auto *fileStore = reinterpret_cast<fix_file_store_factory_t *>(store)) {
-                storeFactory = &fileStore->factory;
+                storeFactory = fileStore->ptr;
             } else if (auto *memoryStore = reinterpret_cast<fix_memory_store_factory_t *>(store)) {
-                storeFactory = &memoryStore->factory;
+                storeFactory = memoryStore->ptr;
             }
         }
 
         if (log) {
             if (auto *screenLog = reinterpret_cast<fix_screen_log_factory_t *>(log)) {
-                logFactory = &screenLog->factory;
+                logFactory = screenLog->ptr;
             } else if (auto *fileLog = reinterpret_cast<fix_file_log_factory_t *>(log)) {
-                logFactory = &fileLog->factory;
+                logFactory = fileLog->ptr;
             }
         }
 
         return new fix_socket_initiator_t{
             logFactory
-                ? new SocketInitiator(*reinterpret_cast<Application *>(app->internal),
+                ? new SocketInitiator(*reinterpret_cast<Application *>(app->ptr),
                                       *storeFactory,
-                                      settings->settings,
+                                      *settings->ptr,
                                       *logFactory)
-                : new SocketInitiator(*reinterpret_cast<Application *>(app->internal),
+                : new SocketInitiator(*reinterpret_cast<Application *>(app->ptr),
                                       *storeFactory,
-                                      settings->settings)};
+                                      *settings->ptr)};
     } catch (const Exception& e) {
         fix_error_set(error, e);
         return nullptr;
@@ -39,13 +39,13 @@ fix_socket_initiator_t *fix_socket_initiator_create(fix_application_t *app, void
 }
 
 void fix_socket_initiator_destroy(fix_socket_initiator_t *initiator) {
-    delete initiator->initiator;
+    delete initiator->ptr;
     delete initiator;
 }
 
 void fix_socket_initiator_start(fix_socket_initiator_t *initiator, fix_error_t *error) {
     try {
-        initiator->initiator->start();
+        initiator->ptr->start();
     } catch (const Exception& e) {
         fix_error_set(error, e);
     }
@@ -53,7 +53,7 @@ void fix_socket_initiator_start(fix_socket_initiator_t *initiator, fix_error_t *
 
 void fix_socket_initiator_block(fix_socket_initiator_t *initiator, fix_error_t *error) {
     try {
-        initiator->initiator->block();
+        initiator->ptr->block();
     } catch (const Exception& e) {
         fix_error_set(error, e);
     }
@@ -61,7 +61,7 @@ void fix_socket_initiator_block(fix_socket_initiator_t *initiator, fix_error_t *
 
 bool fix_socket_initiator_poll(fix_socket_initiator_t *initiator, fix_error_t *error) {
     try {
-        return initiator->initiator->poll();
+        return initiator->ptr->poll();
     } catch (const Exception& e) {
         fix_error_set(error, e);
         return false;
@@ -69,17 +69,19 @@ bool fix_socket_initiator_poll(fix_socket_initiator_t *initiator, fix_error_t *e
 }
 
 void fix_socket_initiator_stop(fix_socket_initiator_t *initiator, bool force) {
-    initiator->initiator->stop(force);
+    std::thread([initiator, force]() {
+        initiator->ptr->stop(force);
+    }).detach();
 }
 
 bool fix_socket_initiator_isLoggedOn(fix_socket_initiator_t *initiator) {
-    return initiator->initiator->isLoggedOn();
+    return initiator->ptr->isLoggedOn();
 }
 
 bool fix_socket_initiator_has(fix_socket_initiator_t *initiator, fix_session_id_t *session) {
-    return initiator->initiator->has(session->id);
+    return initiator->ptr->has(*session->ptr);
 }
 
 bool fix_socket_initiator_isStopped(fix_socket_initiator_t *initiator) {
-    return initiator->initiator->isStopped();
+    return initiator->ptr->isStopped();
 }
