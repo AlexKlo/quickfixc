@@ -3,7 +3,7 @@
 using namespace FIX;
 
 fix_session_settings_t* fix_session_settings_create() {
-    return new fix_session_settings_t();
+    return new fix_session_settings_t{new SessionSettings()};
 }
 
 fix_session_settings_t* fix_session_settings_create_from_file(const char* file, fix_error_t* err) {
